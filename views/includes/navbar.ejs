@@ -1,22 +1,31 @@
 <style>
   img{
-    transform: scale(1);
-    margin-left: 0.2rem;
+    transform: scale(1.7);
+    margin-left: 0.4rem;
   }
   span{
     margin-left: 2rem;
+    
   }
   .navbar{
     background-color: #D9ABAB !important;
     height: 5rem;
   }
-  
+  @media (max-width:480px){
+    .navbar{
+      height: 7rem;
+      padding: 1rem;
+    }
+    img{
+      transform: scale(1.9);
+    }
+  }
 </style>
 <nav class="navbar bg-body-tertiary">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">
       <img src="/assets/icon.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
-      <span>Chess Game</span>
+      <span>ChessAdda</span>
     </a>
   </div>
 </nav>
