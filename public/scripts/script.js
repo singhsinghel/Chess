@@ -105,6 +105,10 @@ socket.on('boardState',(fen)=>{
 socket.on('move',(move)=>{
    chess.move(move);
    renderBoard();
+   if(chess.game_over()){
+    setMessage('Game Over. Restarting the game');
+   }
+   
 });
 socket.on('notification',(message)=>{
     setMessage(message);
@@ -117,8 +121,6 @@ const handleMOve=(sourceSquare,targetSource)=>{
     };
     socket.emit('move',move);
 };
-
-
 
 function setMessage(message) {
     const flashContainer = document.createElement('div');
