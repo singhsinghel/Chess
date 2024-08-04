@@ -94,3 +94,9 @@ input{
     height: 3rem;
 }
 
+.alert{
+        position: absolute !important;
+        top: 5rem;
+        border-radius: 5px;
+        z-index: 1000;
+}

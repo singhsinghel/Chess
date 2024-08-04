@@ -58,7 +58,6 @@ const renderBoard=()=>{
                 draggedPiece=pieceEl;
                 sourceSquare={row:rowindex,col:squreindex};
                 event.dataTransfer.setData('text/plain',""); // it makes draggable run smoothly without any problems
-
                };
             });
             pieceEl.addEventListener('dragend',()=>{
@@ -106,6 +105,9 @@ socket.on('boardState',(fen)=>{
 socket.on('move',(move)=>{
    chess.move(move);
    renderBoard();
+});
+socket.on('notification',(message)=>{
+    setMessage(message);
 })
 const handleMOve=(sourceSquare,targetSource)=>{
     const move={
@@ -115,3 +117,16 @@ const handleMOve=(sourceSquare,targetSource)=>{
     };
     socket.emit('move',move);
 };
+
+
+
+function setMessage(message) {
+    const flashContainer = document.createElement('div');
+    flashContainer.classList.add('alert', 'alert-success' , 'alert-dismissible', 'fade', 'show', 'col-6', 'offset-3', 'mt-1');
+    flashContainer.innerText = message;
+    document.body.prepend(flashContainer);
+    setTimeout(() => {
+        flashContainer.remove();
+      }, 3000); 
+    
+}  

@@ -1,14 +1,13 @@
 const express=require ('express');
 const socket=require("socket.io");
 const http=require('http');
-const {Chess}=require("chess.js"); //here we are importing chexx class from chess.js
+const {Chess}=require("chess.js"); //here we are importing chess class from chess.js
 const path = require('path'); 
 
-let warning='';
 const app = express();
 const server=http.createServer(app); //http server is based on express server (app variable)
 
-//all the functionalities of socket will be shifted into io variable
+//all the functionalities of socket will be inherited into io variable
 const io=socket(server); //socket io requires http server which should be based on express server.
 
 //initiating chess object
@@ -22,7 +21,7 @@ app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname,"public")));
 
 app.get('/',(req,res)=>{
-    res.render('index',{title:'Chess Game',warning,currentRoomId});
+    res.render('index');
 })
 
 io.on("connection",(uniqueSocket)=>{  //here unique socket is the unique info about the client who is visiting the server
@@ -31,50 +30,52 @@ io.on("connection",(uniqueSocket)=>{  //here unique socket is the unique info ab
        uniqueSocket.on('joinRoom', (roomId) => { //  event to handle room joining
         if(roomId==='') return;
         currentRoomId = roomId;
-       uniqueSocket.join(roomId); // Joins the client to the specified room
+        uniqueSocket.join(roomId); // Joins the client to the specified room
     
         if (!players[roomId]) {
           players[roomId] = { white: null, black: null };
           console.log(players);
-          
         }
     
       if(!players[roomId].white){
         players[roomId].white=uniqueSocket.id;
-        uniqueSocket.emit('playerRole',"w")
+        uniqueSocket.emit('playerRole',"w");
+        io.to(players[currentRoomId].white).emit('notification', 'You are white.');
         console.log('white');
-        console.log(players);
       }
       else if(!players[roomId].black){
         players[roomId].black=uniqueSocket.id;
         uniqueSocket.emit('playerRole',"b");
+        io.to(players[currentRoomId].black).emit('notification', 'You are black');
+        io.to(players[currentRoomId].white).emit('notification', 'Black has joined. Start the game');
+        
+        
         console.log('black');
-        console.log(players);
+        
       }
       else{
         uniqueSocket.emit('Spectator');
         console.log('spectator');
         uniqueSocket.emit('boardState', chess.fen());
-        console.log(players);
+        uniqueSocket.emit('notification', 'Spectating');
       }   
       uniqueSocket.on('disconnect', () => {
         if (currentRoomId && players[currentRoomId]) {
           if (uniqueSocket.id === players[currentRoomId].white) {
+            io.to(currentRoomId).emit('notification', 'White player has left. Game ends');
             delete players[currentRoomId];
             console.log(`White player removed from room ${currentRoomId}`);
-            io.to(currentRoomId).emit('notification', 'The white player has left the room.');
           } else if (uniqueSocket.id === players[currentRoomId].black) {
+            io.to(currentRoomId).emit('notification', 'Black player has left. Game ends');
             delete players[currentRoomId];
             currentRoomId=null;
-            console.log(`Black player removed from room ${currentRoomId}`);
-            io.to(currentRoomId).emit('notification', 'The black player has left the room.');
           }
         }
       });
  
      uniqueSocket.on('move',(move)=>{
        try{
-        //making sure that the valid player moves the game
+        //making sure that the valid player moves the game using turn method of Chess class.
         if(chess.turn()==='w' && uniqueSocket.id !== players[roomId].white) return;
         if(chess.turn()==='b' && uniqueSocket.id !== players[roomId].black) return;
         if(chess.turn()==='w'&&players[roomId].black==null) return;
@@ -90,7 +91,7 @@ io.on("connection",(uniqueSocket)=>{  //here unique socket is the unique info ab
        else{
         console.log('Invalid Move:',move);
         uniqueSocket.emit('Invalid Move:',move)
-        
+    
        }
        }
        catch(err){
