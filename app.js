@@ -30,12 +30,11 @@ const keepAliveJob = schedule.scheduleJob('*/5 * * * *', async () => {
       // Replace with your actual app URL
       await axios.get(`https://chess-f6ll.onrender.com/ping`);
   } catch (error) {
-      console.log('Ping failed:', error.message);
+      console.log( error.message);
   }
 });
-
 app.get('/ping', (req, res) => {
-  res.sendStatus(200); // Respond to the ping
+  res.send(200); // Respond to the ping
 });
 
 io.on("connection",(uniqueSocket)=>{  //here unique socket is the unique info about the client who is visiting the server
