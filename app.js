@@ -25,17 +25,17 @@ app.use(express.static(path.join(__dirname,"public")));
 app.get('/',(req,res)=>{
     res.render('index');
 })
-const keepAliveJob = schedule.scheduleJob('*/5 * * * *', async () => {
-  try {
-      // Replace with your actual app URL
-      await axios.get(`https://chess-f6ll.onrender.com/ping`);
-  } catch (error) {
-      console.log( error.message);
-  }
-});
-app.get('/ping', (req, res) => {
-  res.send(200); // Respond to the ping
-});
+// const keepAliveJob = schedule.scheduleJob('*/5 * * * *', async () => {
+//   try {
+//       // Replace with your actual app URL
+//       await axios.get(`https://chess-f6ll.onrender.com/ping`);
+//   } catch (error) {
+//       console.log( error.message);
+//   }
+// });
+// app.get('/ping', (req, res) => {
+//   res.send(200); // Respond to the ping
+// });
 
 io.on("connection",(uniqueSocket)=>{  //here unique socket is the unique info about the client who is visiting the server
       console.log('connected'); 
