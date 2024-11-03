@@ -9,6 +9,10 @@ body{
 *{
     font-family: "Platypi", serif;
 }
+.container-fluid{
+    background-color: black;
+    color: white;
+}
 
 #chessBoard{
     flex: 1;
