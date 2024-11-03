@@ -27,7 +27,6 @@ app.get('/',(req,res)=>{
 })
 // const keepAliveJob = schedule.scheduleJob('*/5 * * * *', async () => {
 //   try {
-//       // Replace with your actual app URL
 //       await axios.get(`https://chess-f6ll.onrender.com/ping`);
 //   } catch (error) {
 //       console.log( error.message);
@@ -38,8 +37,6 @@ app.get('/',(req,res)=>{
 // });
 
 io.on("connection",(uniqueSocket)=>{  //here unique socket is the unique info about the client who is visiting the server
-      console.log('connected'); 
-      
        uniqueSocket.on('joinRoom', (roomId) => { //  event to handle room joining
         if(roomId==='') return;
         currentRoomId = roomId;
@@ -47,14 +44,12 @@ io.on("connection",(uniqueSocket)=>{  //here unique socket is the unique info ab
     
         if (!players[roomId]) {
           players[roomId] = { white: null, black: null };
-          console.log(players);
         }
     
       if(!players[roomId].white){
         players[roomId].white=uniqueSocket.id;
         uniqueSocket.emit('playerRole',"w");
         io.to(players[currentRoomId].white).emit('notification', 'You are white.');
-        console.log('white');
       }
       else if(!players[roomId].black){
         players[roomId].black=uniqueSocket.id;
@@ -62,13 +57,9 @@ io.on("connection",(uniqueSocket)=>{  //here unique socket is the unique info ab
         io.to(players[currentRoomId].black).emit('notification', 'You are black');
         io.to(players[currentRoomId].white).emit('notification', 'Black has joined. Start the game');
         
-        
-        console.log('black');
-        
       }
       else{
         uniqueSocket.emit('Spectator');
-        console.log('spectator');
         uniqueSocket.emit('boardState', chess.fen());
         uniqueSocket.emit('notification', 'Spectating');
       }   

@@ -9,17 +9,14 @@ body{
 *{
     font-family: "Platypi", serif;
 }
-input{
-    background-color: #f0d9b5 !important;
-}
+
 #chessBoard{
     flex: 1;
     min-height: 78dvh;
-    background-color: #803D3B;
 }
 .btn{
     margin-top: 0.7rem;
-    background-color: #b58863 !important;
+
     border: none !important;
 }
 .chessboard {
